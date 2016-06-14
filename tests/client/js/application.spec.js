@@ -1,8 +1,13 @@
+var chai = require('chai');
+var jsdom = require('mocha-jsdom');
 var sinon = require('sinon');
-var should = require('chai').should();
 var Application = require('../../../client/js/application');
 
+chai.should();
+
 describe('The Application class', function () {
+	jsdom();
+
 	it('should exist!', function () {
 		Application.should.exist;
 	});
