@@ -1,5 +1,9 @@
-var should = require('chai').should();
+var EventEmitter = require('events').EventEmitter;
+var chai = require('chai');
+var nodeXMPPServer = require('./../../mockups/server/node-xmpp-server');
 var Main = require('./../../server/main.js');
+
+chai.should();
 
 describe('The Main Class', function () {
 	it('Should exist', function () {
@@ -15,6 +19,7 @@ describe('The Main Class', function () {
 
 		afterEach(function () {
 			instance.disconnect();
+			instance = null;
 		});
 
 		it('Should have the "connected" method', function () {
@@ -34,7 +39,7 @@ describe('The Main Class', function () {
 			instance.should.respondTo('disconnect');
 		});
 
-		it('Should disconnect', function() {
+		it('Should disconnect', function () {
 			instance.connect();
 			instance.disconnect().should.be.true;
 		});
@@ -43,6 +48,15 @@ describe('The Main Class', function () {
 			instance.connect();
 			instance.disconnect();
 			instance.disconnect().should.be.false;
+		});
+
+		it('Should handle client register requests', function (done) {
+			instance.connect();
+			var client = new EventEmitter();
+			nodeXMPPServer.emit('connection', client);
+			client.emit('register', {}, function () {
+				done();
+			});
 		});
 	});
 });
