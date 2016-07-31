@@ -12,6 +12,10 @@ describe('The Connection Base class', function () {
 		Class.should.be.a('function');
 	});
 
+	it ('Should have the "NOT_CONNECTED" constant set to a non empty string ', function (){
+		Class.NOT_CONNECTED.should.be.a('string').and.not.empty;
+	});
+
 	describe('As an instance', function () {
 		var instance;
 
@@ -35,20 +39,20 @@ describe('The Connection Base class', function () {
 			instance.connect(done);
 		});
 
-		it ('Should invoke the callback after calling "disconnect"', function (done) {
-			instance.disconnect(done);
-		});
-
-		it ('Should invoke the callback after calling "request"', function (done) {
-			instance.request({}, done);
-		});
-
 		it ('Should implement the "disconnect" method', function () {
 			instance.should.respondTo('disconnect');
 		});
 
+		it ('Should invoke the callback after calling "disconnect"', function (done) {
+			instance.disconnect(done);
+		});
+
 		it ('Should implement the "request" method', function () {
 			instance.should.respondTo('request');
+		});
+
+		it ('Should invoke the callback after calling "request"', function (done) {
+			instance.request({}, done);
 		});
 	});
 });

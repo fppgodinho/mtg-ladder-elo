@@ -1,25 +1,46 @@
-var sinon = require('sinon');
 var chai = require('chai');
-var Factory = require('../../../../../client/js/components/connection/connection-factory');
+var expect = require('chai').expect;
+var sinon = require('sinon');
+var nodeXMPPClient = require('./../../../../../mockups/client/node-xmpp-client');
+var ConnectionFactory = require('./../../../../../client/js/components/connection/connection-factory');
+var ConnectionXMPP = require('./../../../../../client/js/components/connection/connection-xmpp');
 
 chai.should();
 
 describe('The Connection Factory', function () {
 	it ('Should exist', function () {
-		Factory.should.exist;
+		ConnectionFactory.should.exist;
 	});
 
 	it ('Should be singleton', function () {
-		Factory.should.be.an('object');
+		ConnectionFactory.should.be.an('object');
 	});
 
-	it ('Should implement the "create" method', function () {
-		Factory.should.respondTo('create');
+	it ('Should implement the "createXMP" method', function () {
+		ConnectionFactory.should.respondTo('createXMP');
 	});
 
-	it ('Should return generate a new connection with the "create" method ', function () {
-		var connection = Factory.create('ws', 'localhost', 3001);
+	describe('When creating xmpp connections', function () {
+		var connection;
 
-		connection.should.be.an('object');
+		beforeEach(function () {
+			connection = ConnectionFactory.createXMP(ConnectionXMPP.WEBSOCKET, 'http', 'localhost', 3001, 'user', 'password');
+		});
+
+		afterEach(function () {
+			connection = null;
+		});
+
+		it ('Should resolve with a ConnectionXMPP instance', function () {
+			connection.should.be.an.instanceOf(ConnectionXMPP, 'connection is not a ConnectionXMPP');
+		});
+
+		it ('Should connect without errors', function (done) {
+			connection.connect(function (error) {
+				expect(error).not.to.exist;
+				done();
+			});
+			nodeXMPPClient.emit('online');
+		});
 	});
 });
