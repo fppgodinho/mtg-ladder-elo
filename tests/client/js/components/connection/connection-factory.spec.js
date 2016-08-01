@@ -35,12 +35,10 @@ describe('The Connection Factory', function () {
 			connection.should.be.an.instanceOf(ConnectionXMPP, 'connection is not a ConnectionXMPP');
 		});
 
-		it ('Should connect without errors', function (done) {
-			connection.connect(function (error) {
-				expect(error).not.to.exist;
-				done();
-			});
-			nodeXMPPClient.emit('online');
-		});
+		// it ('Should connect without errors', function (done) {
+		// 	connection.on(ConnectionXMPP.CONNECTED, done);
+		// 	connection.connect();
+		// 	nodeXMPPClient.emit('online');
+		// });
 	});
 });

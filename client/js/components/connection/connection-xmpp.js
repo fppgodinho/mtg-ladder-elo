@@ -5,7 +5,7 @@ var xmpp = require('node-xmpp-client');
 var Constructor = function () {
 	this._address = null;
 	this._connected = false;
-	this._connecting = false;
+	this._busy = false;
 	this._connectionType = null;
 	this._password = null;
 	this._port = null;
@@ -14,11 +14,25 @@ var Constructor = function () {
 	this._xmpp = new xmpp({
 		autostart: false
 	});
+	
+	this._xmpp.on('online', this._handleConnected.bind(this));
+	this._xmpp.on('error', this._handleError.bind(this));
 };
 util.inherits(Constructor, ConnectionBase);
 
 Constructor.UNKNOWN_CONNECTION_TYPE = 'UnknownConnectionType';
 Constructor.WEBSOCKET = 'WebSocket';
+
+Constructor.prototype._handleConnected = function () {
+	this._busy = false;
+	this._connected = true;
+	this.emit(ConnectionBase.CONNECTED);
+};
+
+Constructor.prototype._handleError = function (error) {
+	this._busy = false;
+	this.emit(ConnectionBase.ERROR, error);
+};
 
 Constructor.prototype.setup = function (connectionType, protocol, address, port, username, password) {
 	this._connectionType = connectionType;
@@ -29,79 +43,52 @@ Constructor.prototype.setup = function (connectionType, protocol, address, port,
 	this._password = password;
 };
 
-Constructor.prototype.connect = function (callback) {
-	var self = this;
-	var onError, onOnline;
-
-	if (this._connecting) {
-		callback('Connection in progress');
+Constructor.prototype.connect = function () {
+	if (this._busy) {
+		this.emit(ConnectionBase.ERROR, ConnectionBase.BUSY);
 	} else if (this._connected) {
-		callback('Connection already open!');
+		this.emit(ConnectionBase.ERROR, ConnectionBase.ALREADY_CONNECTED);
 	} else {
-		onError = function (error) {
-			_handleConnectionResult(self, error, onError, onOnline, self._xmpp, callback);
-		};
-
-		onOnline = function () {
-			_handleConnectionResult(self, null, onError, onOnline, self._xmpp, callback);
-		};
-
 		this._connected = false;
-		this._connecting = true;
+		this._busy = true;
 
 		this._xmpp.options.jid = this._username + '@' + this._address;
 		this._xmpp.options.password = this._password;
 		switch (this._connectionType) {
 			case Constructor.WEBSOCKET:
-				_setConnectionAsWebSocket(this._xmpp, this._protocol, this._address, this._port);
+				this._setConnectionAsWebSocket(this._xmpp, this._protocol, this._address, this._port);
 				break;
 			default:
-				callback(Constructor.UNKNOWN_CONNECTION_TYPE);
+				this.emit(ConnectionBase.ERROR, Constructor.UNKNOWN_CONNECTION_TYPE);
 				return;
 		}
 
-		this._xmpp.on('error', onError);
-		this._xmpp.on('online', onOnline);
+		this._busy = true;
 		this._xmpp.connect();
 	}
 };
 
-function _handleConnectionResult(instance, error, onError, onOnline, connection, callback) {
-	instance._connecting = false;
-	instance._connected = !error;
-	connection.removeListener('error', onError);
-	connection.removeListener('online', onOnline);
-
-	if (error) {
-		_kill(connection);
-	}
-
-	if (typeof callback === 'function') {
-		callback(error);
-	}
-}
-
-function _kill(connection) {
-	if (connection) {
-		connection.end();
-	}
-	
-}
-
-function _setConnectionAsWebSocket(xmpp, protocol, address, port) {
-	xmpp.options.websocket = {
-		url: protocol + '://' + address + ':' + port
+Constructor.prototype._setConnectionAsWebSocket = function () {
+	this._xmpp.options.websocket = {
+		url: this._protocol + '://' + this._address + ':' + this._port
 	};
-}
-
-Constructor.prototype.disconnect = function (callback) {
-	if (!this._connected) {
-		callback(ConnectionBase.NOT_CONNECTED);
-	} else callback();
 };
 
-Constructor.prototype.request = function (data, callback) {
-	callback();
+Constructor.prototype.disconnect = function () {
+	if (this._busy) {
+		this.emit(ConnectionBase.ERROR, ConnectionBase.BUSY);
+	} else if (!this._connected) {
+		this.emit(ConnectionBase.ERROR, ConnectionBase.NOT_CONNECTED);
+	} else {
+		this._connected = false;
+		this._busy = false;
+		this._xmpp.end();
+		this.emit(ConnectionBase.DISCONNECTED);
+	}
+};
+
+Constructor.prototype.request = function (data) {
+	// callback();
 };
 
 module.exports = Constructor;

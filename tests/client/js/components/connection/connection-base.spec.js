@@ -1,3 +1,4 @@
+var EventEmiter = require('events');
 var chai = require('chai');
 var Class = require('../../../../../client/js/components/connection/connection-base');
 
@@ -10,6 +11,26 @@ describe('The Connection Base class', function () {
 
 	it ('Should be a function', function () {
 		Class.should.be.a('function');
+	});
+
+	it ('Should have the "BUSY" constant set to a non empty string ', function (){
+		Class.BUSY.should.be.a('string').and.not.empty;
+	});
+
+	it ('Should have the "CONNECTED" constant set to a non empty string ', function (){
+		Class.CONNECTED.should.be.a('string').and.not.empty;
+	});
+
+	it ('Should have the "DISCONNECTED" constant set to a non empty string ', function (){
+		Class.DISCONNECTED.should.be.a('string').and.not.empty;
+	});
+
+	it ('Should have the "ERROR" constant set to a non empty string ', function (){
+		Class.ERROR.should.be.a('string').and.not.empty;
+	});
+
+	it ('Should have the "ALREADY_CONNECTED" constant set to a non empty string ', function (){
+		Class.ALREADY_CONNECTED.should.be.a('string').and.not.empty;
 	});
 
 	it ('Should have the "NOT_CONNECTED" constant set to a non empty string ', function (){
@@ -25,6 +46,10 @@ describe('The Connection Base class', function () {
 
 		afterEach(function () {
 			instance = null;
+		});
+
+		it ('should be an EventEmiter', function () {
+			instance.should.be.instanceOf(EventEmiter);
 		});
 
 		it ('Should implement the "setup" method', function () {
