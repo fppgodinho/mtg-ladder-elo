@@ -7,7 +7,7 @@ var ConnectionBase = require('./connection-base');
 var Constructor = function () {
 	this._busy = false;
 	this._connected = false;
-	this._connection = connectionFactory.createXMP(ConnectionXMPP.WEBSOCKET, 'http', 'localaddress', 3000, '', '');
+	this._connection = connectionFactory.createXMP(ConnectionXMPP.WEBSOCKET, 'ws', 'localaddress', 3000, '', '');
 	this._connection.on(ConnectionBase.CONNECTED, this._handleConnected.bind(this));
 	this._connection.on(ConnectionBase.DISCONNECTED, this._handleDisconnected.bind(this));
 	this._connection.on(ConnectionBase.ERROR, this._handleError.bind(this));
