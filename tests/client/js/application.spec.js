@@ -13,10 +13,9 @@ describe('The Application class', function () {
 	});
 
 	describe('As an instance', function () {
-		var sandbox;
-		var context;
+		var clock = sinon.useFakeTimers();
 		var interval = 10;
-		var instance;
+		var context, instance, sandbox;
 
 		beforeEach(function () {
 			sandbox = sinon.sandbox.create();
@@ -30,22 +29,18 @@ describe('The Application class', function () {
 			sandbox.restore();
 		});
 
-		it ('Should never be initialized if context is not ready', function (done) {
+		it ('Should never be initialized if context is not ready', function () {
 			var spy = sandbox.spy(instance, 'init');
-			setTimeout(function () {
-				spy.neverCalledWith().should.be.true;
-				done();
-			}, interval);
+
+			spy.neverCalledWith().should.be.true;
 		});
 
-		it ('Should be initialized if context is ready', function (done) {
-			context.readyState = 'complete';
+		it ('Should be initialized if context is ready', function () {
 			var spy = sandbox.spy(instance, 'init');
-			setTimeout(function () {
-				spy.calledOnce.should.be.true;
-				done();
-			}, interval);
+
+			context.readyState = 'complete';
+			clock.tick(1000);
+			spy.calledOnce.should.be.true;
 		});
 	});
-
 });
