@@ -17,6 +17,8 @@ Constructor.prototype.connect = function () {
 		});
 
 		this._connection.on('connection', _addClientEvents);
+
+		console.log('-------- SERVING XMPP WEBSOCKET --------');
 	}
 
 	return result;
@@ -36,6 +38,9 @@ Constructor.prototype.disconnect = function () {
 };
 
 var _addClientEvents = function (client) {
+	if (client.connection) {
+		console.log('XMPP CLIENT CONNECTED:', client.connection.socket.socket.upgradeReq.connection.remoteAddress);
+	}
 	client.on('register', _registerClient);
 };
 

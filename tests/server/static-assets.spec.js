@@ -1,20 +1,20 @@
 var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
-var nodeXMPPServer = require('./../../mockups/server/node-xmpp-server');
-var Main = require('./../../server/main.js');
+var express = require('./../../mockups/server/express');
+var StaticAssets = require('./../../server/static-assets.js');
 
 chai.should();
 
-describe('The Main Class', function () {
+describe('The Static Assets Class', function () {
 	it('Should exist', function () {
-		Main.should.exist;
+		StaticAssets.should.exist;
 	});
 
 	describe('As an instance', function () {
 		var instance;
 
 		beforeEach(function () {
-			instance = new Main();
+			instance = new StaticAssets();
 		});
 
 		afterEach(function () {
@@ -48,15 +48,6 @@ describe('The Main Class', function () {
 			instance.connect();
 			instance.disconnect();
 			instance.disconnect().should.be.false;
-		});
-
-		it('Should handle client register requests', function (done) {
-			instance.connect();
-			var client = new EventEmitter();
-			nodeXMPPServer.emit('connection', client);
-			client.emit('register', {}, function () {
-				done();
-			});
 		});
 	});
 });
