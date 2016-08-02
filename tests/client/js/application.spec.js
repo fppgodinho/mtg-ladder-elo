@@ -1,7 +1,8 @@
 var chai = require('chai');
 var jsdom = require('mocha-jsdom');
 var sinon = require('sinon');
-var Application = require('../../../client/js/application');
+var connectionXMPP = require('./../../../mockups/client/node-xmpp-client');
+var Application = require('./../../../client/js/application');
 
 chai.should();
 
@@ -13,12 +14,12 @@ describe('The Application class', function () {
 	});
 
 	describe('As an instance', function () {
-		var clock = sinon.useFakeTimers();
 		var interval = 10;
-		var context, instance, sandbox;
+		var clock, context, instance, sandbox;
 
 		beforeEach(function () {
 			sandbox = sinon.sandbox.create();
+			clock = sandbox.useFakeTimers();
 			context = {
 				readyState: 'loading'
 			};
@@ -34,7 +35,7 @@ describe('The Application class', function () {
 
 			spy.neverCalledWith().should.be.true;
 		});
-
+		//
 		it ('Should be initialized if context is ready', function () {
 			var spy = sandbox.spy(instance, 'init');
 
