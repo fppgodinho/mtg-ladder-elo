@@ -1,6 +1,15 @@
-var Constructor = function () {};
+var EventEmitter = require('events');
+var util = require('util');
 
-Constructor.NOT_CONNECTED = 'Not Connected!';
+var Constructor = function () {};
+util.inherits(Constructor, EventEmitter);
+
+Constructor.BUSY = 'Busy';
+Constructor.CONNECTED = 'Connected';
+Constructor.DISCONNECTED = 'Disconnected';
+Constructor.ERROR = 'Error';
+Constructor.ALREADY_CONNECTED = 'AlreadyConnected';
+Constructor.NOT_CONNECTED = 'NotConnected';
 
 Constructor.prototype.setup = function () {};
 
