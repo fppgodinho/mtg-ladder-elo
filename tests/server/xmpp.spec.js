@@ -53,7 +53,13 @@ describe('The XMPP Class', function () {
 		it('Should handle client register requests', function (done) {
 			instance.connect();
 			var client = new EventEmitter();
-			nodeXMPPServer.emit('connection', client);
+			client.connection = {};
+			client.connection.socket = {};
+			client.connection.socket.socket = {};
+			client.connection.socket.socket.upgradeReq = {};
+			client.connection.socket.socket.upgradeReq.connection = {};
+
+			nodeXMPPServer.getInstance().emit('connection', client);
 			client.emit('register', {}, function () {
 				done();
 			});

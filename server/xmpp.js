@@ -38,15 +38,30 @@ Constructor.prototype.disconnect = function () {
 };
 
 var _addClientEvents = function (client) {
-	if (client.connection) {
-		console.log('XMPP CLIENT CONNECTED:', client.connection.socket.socket.upgradeReq.connection.remoteAddress);
-	}
-	client.on('register', _registerClient);
-};
+	console.log('XMPP CLIENT CONNECTED:', client.connection.socket.socket.upgradeReq.connection.remoteAddress);
 
-var _registerClient = function (opts, callback) {
-	console.log('REGISTER');
-	callback(true);
+	client.on('register', function (opts, callback) {
+		console.log('XMPP CLIENT AUTHENTICATION SUCCESS:', opts.username);
+		callback(true);
+	});
+	client.on('authenticate', function (opts, callback) {
+		if (opts.password === 'password') {
+			console.log('XMPP CLIENT AUTHENTICATION SUCCESS:', opts.username);
+			callback(null, opts)
+		} else {
+			console.log('XMPP CLIENT AUTHENTICATION ERROR:', opts.username);
+			callback(false)
+		}
+	});
+	client.on('online', function () {
+		console.log('XMPP CLIENT ONLINE:', client.jid.toString());
+	});
+	client.on('stanza', function (stanza) {
+		console.log('XMPP CLIENT STANZA:', client.jid.toString(), stanza);
+	});
+	client.on('disconnect', function () {
+		console.log('XMPP CLIENT DISCONNECTED:', client.jid.toString());
+	});
 };
 
 module.exports = Constructor;

@@ -1,21 +1,29 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var mock = require('mock-require');
+var instance;
 
-var MockUpInstance = function () {
+var MockUp = function () {
 	this.server = {
 		stop: function () {}
 	}
-};
-util.inherits(MockUpInstance, EventEmitter);
+	this.connection = {
 
-var instance = new MockUpInstance();
+	}
+};
+util.inherits(MockUp, EventEmitter);
 
 var mockup = {
 	WebSocketServer: function () {
+		instance = new MockUp();
+
 		return instance;
 	}
 };
 mock('node-xmpp-server', mockup);
 
-module.exports = instance;
+module.exports = {
+	getInstance: function () {
+		return instance;
+	}
+};

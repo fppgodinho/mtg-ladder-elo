@@ -14,8 +14,9 @@ var Constructor = function () {
 	this._xmpp = new xmpp({
 		autostart: false
 	});
-	
+
 	this._xmpp.on('online', this._handleConnected.bind(this));
+	this._xmpp.on('stanza', this._handleStanza.bind(this));
 	this._xmpp.on('error', this._handleError.bind(this));
 };
 util.inherits(Constructor, ConnectionBase);
@@ -24,12 +25,18 @@ Constructor.UNKNOWN_CONNECTION_TYPE = 'UnknownConnectionType';
 Constructor.WEBSOCKET = 'WebSocket';
 
 Constructor.prototype._handleConnected = function () {
+	console.log('-------->', 'Connected');
 	this._busy = false;
 	this._connected = true;
 	this.emit(ConnectionBase.CONNECTED);
 };
 
+Constructor.prototype._handleStanza = function (stanza) {
+	console.log('-------->', 'Stanza', stanza);
+};
+
 Constructor.prototype._handleError = function (error) {
+	console.log('-------->', 'Error', error);
 	this._busy = false;
 	this.emit(ConnectionBase.ERROR, error);
 };
@@ -64,6 +71,7 @@ Constructor.prototype.connect = function () {
 		}
 
 		this._busy = true;
+		console.log('Connect...');
 		this._xmpp.connect();
 	}
 };
