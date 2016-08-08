@@ -25,18 +25,16 @@ Constructor.UNKNOWN_CONNECTION_TYPE = 'UnknownConnectionType';
 Constructor.WEBSOCKET = 'WebSocket';
 
 Constructor.prototype._handleConnected = function () {
-	console.log('-------->', 'Connected');
 	this._busy = false;
 	this._connected = true;
 	this.emit(ConnectionBase.CONNECTED);
 };
 
 Constructor.prototype._handleStanza = function (stanza) {
-	console.log('-------->', 'Stanza', stanza);
+	// console.log('-------->', 'Stanza', stanza);
 };
 
 Constructor.prototype._handleError = function (error) {
-	console.log('-------->', 'Error', error);
 	this._busy = false;
 	this.emit(ConnectionBase.ERROR, error);
 };
@@ -71,7 +69,6 @@ Constructor.prototype.connect = function () {
 		}
 
 		this._busy = true;
-		console.log('Connect...');
 		this._xmpp.connect();
 	}
 };

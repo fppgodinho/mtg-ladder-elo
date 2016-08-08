@@ -1,6 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
 var nodeXMPPServer = require('./../../mockups/server/node-xmpp-server');
+var Waterline = require('./../../mockups/server/waterline');
 var xmpp = require('./../../server/xmpp.js');
 
 chai.should();
@@ -13,26 +14,27 @@ describe('The XMPP Class', function () {
 	describe('As an instance', function () {
 		var instance;
 
-		beforeEach(function () {
-			instance = new xmpp();
+		beforeEach(function (done) {
+			instance = new xmpp(null, null, done);
 		});
 
-		afterEach(function () {
+		afterEach(function (done) {
 			instance.disconnect();
 			instance = null;
+			Waterline.destroy(done);
 		});
 
 		it('Should have the "connected" method', function () {
 			instance.should.respondTo('connect');
 		});
 
-		it('Should connect', function () {
-			instance.connect().should.be.true;
-		});
-
 		it('Should fail silently when connecting a connected instance', function () {
 			instance.connect();
 			instance.connect().should.be.false;
+		});
+
+		it('Should connect', function () {
+			instance.connect().should.be.true;
 		});
 
 		it('Should have the "disconnect" method', function () {
