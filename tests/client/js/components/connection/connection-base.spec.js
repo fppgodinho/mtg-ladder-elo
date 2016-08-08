@@ -1,6 +1,6 @@
 var EventEmiter = require('events');
 var chai = require('chai');
-var Class = require('../../../../../client/js/components/connection/connection-base');
+var Class = require('../../../../../src/client/js/components/connection/connection-base');
 
 chai.should();
 

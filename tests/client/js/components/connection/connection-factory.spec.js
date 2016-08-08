@@ -2,8 +2,8 @@ var chai = require('chai');
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var nodeXMPPClient = require('./../../../../../mockups/client/node-xmpp-client');
-var ConnectionFactory = require('./../../../../../client/js/components/connection/connection-factory');
-var ConnectionXMPP = require('./../../../../../client/js/components/connection/connection-xmpp');
+var ConnectionFactory = require('./../../../../../src/client/js/components/connection/connection-factory');
+var ConnectionXMPP = require('./../../../../../src/client/js/components/connection/connection-xmpp');
 
 chai.should();
 

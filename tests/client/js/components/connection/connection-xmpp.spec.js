@@ -3,8 +3,8 @@ var expect = require('chai').expect;
 var jsdom = require('mocha-jsdom');
 var sinon = require('sinon');
 var nodeXMPPClient = require('./../../../../../mockups/client/node-xmpp-client');
-var ConnectionBase = require('./../../../../../client/js/components/connection/connection-base');
-var ConnectionXMPP = require('./../../../../../client/js/components/connection/connection-xmpp');
+var ConnectionBase = require('./../../../../../src/client/js/components/connection/connection-base');
+var ConnectionXMPP = require('./../../../../../src/client/js/components/connection/connection-xmpp');
 
 chai.should();
 

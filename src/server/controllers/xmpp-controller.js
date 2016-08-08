@@ -31,7 +31,7 @@ var Constructor = function (address, port, callback) {
 	};
 
 	this._connectToDB(function () {
-		
+		callback();
 	});
 };
 
@@ -52,8 +52,8 @@ Constructor.prototype.connect = function () {
 	if (!this._connection) {
 		result = true;
 		this._connection = new XMPPServer.WebSocketServer({
-			port: this._address,
-			domain: this._port
+			port: this._port,
+			host: this._address
 		});
 
 		this._connection.once('connection', this._addEventsToClientHandler);

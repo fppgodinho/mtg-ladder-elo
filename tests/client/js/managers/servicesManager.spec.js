@@ -1,6 +1,6 @@
 var EventEmitter = require('events');
 var chai = require('chai');
-var ServicesManager = require('../../../../client/js/managers/servicesManager');
+var ServicesManager = require('../../../../src/client/js/managers/servicesManager');
 
 chai.should();
 
