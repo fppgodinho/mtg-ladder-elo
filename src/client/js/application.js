@@ -1,4 +1,4 @@
-var servicesManager = require('./managers/servicesManager');
+var servicesManager = require('./managers/services-manager');
 var ConnectionService = require('./components/connection/connection-service');
 
 var Constructor = function (context, interval) {

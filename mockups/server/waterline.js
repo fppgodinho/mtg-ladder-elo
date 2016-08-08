@@ -17,7 +17,7 @@ MockUpClass.prototype.loadCollection = function (collection) {
 };
 MockUpClass.prototype.initialize = function (config, callback) {
 
-	this._config = {
+	this._configDB = {
 		adapters: {
 			'memory': memoryAdaptor
 		},
@@ -28,7 +28,10 @@ MockUpClass.prototype.initialize = function (config, callback) {
 			}
 		}
 	};
-	return this._memoryDB.initialize(this._config, callback);
+
+	this._memoryDB.initialize(this._configDB, callback);
+
+	this.collections = this._memoryDB.collections;
 };
 
 function mockup () {
@@ -41,7 +44,7 @@ mock('waterline', mockup);
 
 module.exports = {
 	getInstance: function () {
-		return instance;
+		return instance || new mockup();
 	},
 	destroy: function (callback) {
 		if (instance) {

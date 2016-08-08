@@ -1,2 +1,10 @@
-new (require('./src/server/controllers/statics-controller'))(__dirname + '/statics', 3000).connect();
-new (require('./src/server/controllers/xmpp-controller'))('localhost', 3001, function() {}).connect();
+new (require('./src/server/main'))({
+	statics: {
+		path: __dirname + '/statics',
+		port: 3000
+	},
+	xmpp: {
+		host: 'localhost',
+		poert: 3001
+	}
+});
