@@ -1,2 +1,2 @@
-new (require('./server/static-assets'))(__dirname + '/server/public', 3000).connect();
-new (require('./server/xmpp'))(3001).connect();
+new (require('./src/server/controllers/statics-controller'))(__dirname + '/statics', 3000).connect();
+new (require('./src/server/controllers/xmpp-controller'))('localhost', 3001, function() {}).connect();

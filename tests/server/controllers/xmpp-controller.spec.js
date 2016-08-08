@@ -1,8 +1,8 @@
 var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
-var nodeXMPPServer = require('./../../mockups/server/node-xmpp-server');
-var Waterline = require('./../../mockups/server/waterline');
-var xmpp = require('./../../server/xmpp.js');
+var nodeXMPPServer = require('./../../../mockups/server/node-xmpp-server');
+var Waterline = require('./../../../mockups/server/waterline');
+var xmpp = require('./../../../src/server/controllers/xmpp-controller');
 
 chai.should();
 

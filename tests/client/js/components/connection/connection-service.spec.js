@@ -1,6 +1,6 @@
 var chai = require('chai');
 var nodeXMPPClient = require('./../../../../../mockups/client/node-xmpp-client');
-var ConnectionService = require('./../../../../../client/js/components/connection/connection-service');
+var ConnectionService = require('./../../../../../src/client/js/components/connection/connection-service');
 
 chai.should();
 

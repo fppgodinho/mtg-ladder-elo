@@ -5,4 +5,8 @@
 node_modules
 npm-debug.log
 coverage
-data
+data/**/*.*
+statics/**/*.*
+
+!statics/index.html
+!**/*/.include

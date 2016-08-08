@@ -1,7 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
-var express = require('./../../mockups/server/express');
-var StaticAssets = require('./../../server/static-assets.js');
+var express = require('./../../../mockups/server/express');
+var StaticAssets = require('./../../../src/server/controllers/statics-controller');
 
 chai.should();
 

@@ -2,7 +2,7 @@ var chai = require('chai');
 var jsdom = require('mocha-jsdom');
 var sinon = require('sinon');
 var connectionXMPP = require('./../../../mockups/client/node-xmpp-client');
-var Application = require('./../../../client/js/application');
+var Application = require('./../../../src/client/js/application');
 
 chai.should();
 
