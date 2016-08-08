@@ -3,7 +3,7 @@ var expect = require('chai').expect;
 var sinon = require('sinon');
 var nodeXMPPClient = require('./../../../../../mockups/client/node-xmpp-client');
 var ConnectionFactory = require('./../../../../../src/client/js/components/connection/connection-factory');
-var ConnectionXMPP = require('./../../../../../src/client/js/components/connection/connection-xmpp');
+var ConnectionXMPP = require('./../../../../../src/client/js/components/connection/xmpp-connection');
 
 chai.should();
 

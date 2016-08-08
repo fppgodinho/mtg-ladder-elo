@@ -3,12 +3,12 @@ var expect = require('chai').expect;
 var jsdom = require('mocha-jsdom');
 var sinon = require('sinon');
 var nodeXMPPClient = require('./../../../../../mockups/client/node-xmpp-client');
-var ConnectionBase = require('./../../../../../src/client/js/components/connection/connection-base');
-var ConnectionXMPP = require('./../../../../../src/client/js/components/connection/connection-xmpp');
+var ConnectionBase = require('./../../../../../src/client/js/components/connection/connection');
+var ConnectionXMPP = require('./../../../../../src/client/js/components/connection/xmpp-connection');
 
 chai.should();
 
-describe('The ConnectionXMPP class', function () {
+describe('The XMPP Connection class', function () {
 	jsdom();
 
 	it ('Should exist', function () {

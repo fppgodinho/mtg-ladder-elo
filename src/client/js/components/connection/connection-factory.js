@@ -1,4 +1,4 @@
-var ConnectionXMPP = require('./connection-xmpp');
+var ConnectionXMPP = require('./xmpp-connection');
 
 var Constructor = function () {};
 

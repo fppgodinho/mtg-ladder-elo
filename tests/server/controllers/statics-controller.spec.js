@@ -5,7 +5,7 @@ var StaticAssets = require('./../../../src/server/controllers/statics-controller
 
 chai.should();
 
-describe('The Static Assets Class', function () {
+describe('The Statics Controller Class', function () {
 	it('Should exist', function () {
 		StaticAssets.should.exist;
 	});

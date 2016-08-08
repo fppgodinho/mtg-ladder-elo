@@ -1,8 +1,8 @@
 var EventEmitter = require('events');
 var util = require('util');
 var connectionFactory = require('./connection-factory');
-var ConnectionXMPP = require('./connection-xmpp');
-var ConnectionBase = require('./connection-base');
+var ConnectionXMPP = require('./xmpp-connection');
+var ConnectionBase = require('./connection');
 
 var Constructor = function () {
 	this._busy = false;

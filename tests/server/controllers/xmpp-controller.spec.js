@@ -1,12 +1,11 @@
 var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
 var nodeXMPPServer = require('./../../../mockups/server/node-xmpp-server');
-var Waterline = require('./../../../mockups/server/waterline');
 var xmpp = require('./../../../src/server/controllers/xmpp-controller');
 
 chai.should();
 
-describe('The XMPP Class', function () {
+describe('The XMPP Controller Class', function () {
 	it('Should exist', function () {
 		xmpp.should.exist;
 	});
@@ -14,14 +13,13 @@ describe('The XMPP Class', function () {
 	describe('As an instance', function () {
 		var instance;
 
-		beforeEach(function (done) {
-			instance = new xmpp(null, null, done);
+		beforeEach(function () {
+			instance = new xmpp(null, null);
 		});
 
-		afterEach(function (done) {
+		afterEach(function () {
 			instance.disconnect();
 			instance = null;
-			Waterline.destroy(done);
 		});
 
 		it('Should have the "connected" method', function () {
