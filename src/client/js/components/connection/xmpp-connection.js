@@ -1,5 +1,5 @@
 var util = require('util');
-var ConnectionBase = require('./connection-base');
+var ConnectionBase = require('./connection');
 var xmpp = require('node-xmpp-client');
 
 var Constructor = function () {

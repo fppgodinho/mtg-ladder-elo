@@ -1,10 +1,10 @@
 var EventEmiter = require('events');
 var chai = require('chai');
-var Class = require('../../../../../src/client/js/components/connection/connection-base');
+var Class = require('../../../../../src/client/js/components/connection/connection');
 
 chai.should();
 
-describe('The Connection Base class', function () {
+describe('The Connection class', function () {
 	it ('Should exist', function () {
 		Class.should.exist;
 	});

@@ -1,49 +1,12 @@
 var XMPPServer = require('node-xmpp-server');
-var Waterline = require('waterline');
-var diskAdapter = require('sails-disk');
+var servicesManager = require('./../managers/services-manager');
 
-var Constructor = function (address, port, callback) {
+var Constructor = function (address, port) {
 	this._address = address || 'localhost';
 	this._port = port || 3001;
 	this._connection = null;
 	this._addEventsToClientHandler = this._addEventsToClient.bind(this);
-	this._waterline = new Waterline();
-	this._userCollection = Waterline.Collection.extend({
-		identity: 'user',
-		connection: 'default',
-		attributes: {
-			user: 'string',
-			password: 'string'
-		}
-	});
-	this._waterline.loadCollection(this._userCollection);
-	this._config = {
-		adapters: {
-			'disk': diskAdapter
-		},
-
-		connections: {
-			default: {
-				adapter: 'disk',
-				filePath: 'data/'
-			}
-		}
-	};
-
-	this._connectToDB(function () {
-		callback();
-	});
-};
-
-Constructor.prototype._connectToDB = function (callback) {
-	this._waterline.initialize(this._config, function (err, ontology) {
-		var self = this;
-
-		this._userModel = ontology.collections.user;
-		this._userModel.findOne({user: 'user'}).then(function (user) {
-			return user || self._userModel.create({user: 'user', password: 'password'});
-		}).then(callback);
-	});
+	this._authenticationService = servicesManager.get('authentication');
 };
 
 Constructor.prototype.connect = function () {
@@ -56,7 +19,7 @@ Constructor.prototype.connect = function () {
 			host: this._address
 		});
 
-		this._connection.once('connection', this._addEventsToClientHandler);
+		this._connection.on('connection', this._addEventsToClientHandler);
 		console.log('-------- SERVING XMPP WEBSOCKET --------');
 	}
 
@@ -94,18 +57,20 @@ Constructor.prototype._addEventsToClient = function (client) {
 		self._handleClientStanza(client, stanza);
 	});
 	client.on('disconnect', function () {
-		self._handleClientDisconnect(client, stanza);
+		self._handleClientDisconnect(client);
 	});
 };
 
 Constructor.prototype._handleClientAuthentication = function (client, opts, callback) {
-	if (opts.password === 'password') {
-		console.log('XMPP CLIENT AUTHENTICATION SUCCESS:', opts.username);
-		callback(null, opts);
-	} else {
-		console.log('XMPP CLIENT AUTHENTICATION ERROR:', opts.username);
-		callback(false);
-	}
+	this._authenticationService.validate(opts.username, opts.password, function (error) {
+		if (error) {
+			console.log('XMPP CLIENT AUTHENTICATION ERROR:', opts.username);
+			callback(false);
+		} else {
+			console.log('XMPP CLIENT AUTHENTICATION SUCCESS:', opts.username);
+			callback(null, opts);
+		}
+	});
 };
 Constructor.prototype._handleClientRegister = function (client, opts, callback) {
 	console.log('XMPP CLIENT AUTHENTICATION SUCCESS:', opts.username);
@@ -117,9 +82,8 @@ Constructor.prototype._handleClientOnline = function (client) {
 Constructor.prototype._handleClientStanza = function (client, stanza) {
 	console.log('XMPP CLIENT STANZA:', client.jid.toString(), stanza);
 };
-Constructor.prototype._handleClientDisconnect = function () {
-	console.log('XMPP CLIENT DISCONNECTED:', client.jid.toString());
+Constructor.prototype._handleClientDisconnect = function (client) {
+	console.log('XMPP CLIENT DISCONNECTED:', client.jid?client.jid.toString():'guest');
 };
-
 
 module.exports = Constructor;

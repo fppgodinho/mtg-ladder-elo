@@ -6,10 +6,10 @@ var instance;
 var MockUp = function () {
 	this.server = {
 		stop: function () {}
-	}
-	this.connection = {
+	};
 
-	}
+	this.connection = {
+	};
 };
 util.inherits(MockUp, EventEmitter);
 
