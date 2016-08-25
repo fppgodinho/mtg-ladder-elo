@@ -15,6 +15,8 @@ Constructor.prototype.set = function (name, service) {
 		_services[name] = service;
 		this.emit(this.ADDED, name);
 	}
+
+	return _services[name];
 };
 
 Constructor.prototype.get = function (name) {
