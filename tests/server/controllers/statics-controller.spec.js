@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
+var sinon = require('sinon');
 var express = require('./../../../mockups/server/express');
 var StaticAssets = require('./../../../src/server/controllers/statics-controller');
 
@@ -48,6 +49,15 @@ describe('The Statics Controller Class', function () {
 			instance.connect();
 			instance.disconnect();
 			instance.disconnect().should.be.false;
+		});
+
+		it('Should invoke the "next" callback when express triggers the default route', function () {
+			var test = new StaticAssets();
+
+			test.connect();
+
+			//console.log(express.getInstance()._routes[''].length);
+			// express.getInstance().use()
 		});
 	});
 });

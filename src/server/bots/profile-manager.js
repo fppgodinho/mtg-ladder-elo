@@ -1,6 +1,7 @@
 var modelsManager = require('./../managers/models-manager');
 
 var JID = require('node-xmpp-core').JID;
+var ltx = require('node-xmpp-core').stanza.ltx;
 var Client = require('node-xmpp-client');
 
 var Constructor = function (address, port) {
@@ -46,9 +47,15 @@ Constructor.prototype._handleStanza = function (stanza) {
 
 	this._users.findOne({user: from.local}).then(function (data) {
 		var profile = self._sanitizeProfile(data);
-		var message = '<iq id="' + stanza.attrs.id + '" to="' + stanza.from + '"><body>[CDATA[' + JSON.stringify(profile) + ']]</body></iq>';
+		var message =
+			'<iq id="' + stanza.attrs.id + '" to="' + stanza.from + '" type="result">' +
+			'<query xmlns="urn:ietf:params:xml:ns:profile">' +
+			JSON.stringify(profile) +
+			'</query>' +
+			'</iq>';
 
-		self._connection.send(message);
+		stanza = ltx.parse(message)
+		self._connection.send(stanza);
 	});
 };
 
