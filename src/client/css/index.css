@@ -1,1 +1,5 @@
-@import "bootstrap.native/assets/css/bootstrap.min.css";
+@import "bootstrap/dist/css/bootstrap.css";
+
+body {
+	color: red;
+}

@@ -1,24 +1,36 @@
 var servicesManager = require('./managers/services-manager');
-var ConnectionService = require('./components/connection/connection-service');
+var templatesManager = require('./managers/templates-manager');
+
+var SessionService = require('./services/session/session-service');
+var XMPPService = require('./services/connection/xmpp-service');
+
+var MainController = require('./components/base/main-controller');
 
 var Constructor = function (context, interval) {
-  	this._context = context;
-	this._interval = interval;
-
 	this._mapServices();
+	this._mapTemplates();
+
+  	this._parent = context;
+	this._interval = interval;
+	this._mainController = null;
+
 	this._checkLoaded();
 };
 
 Constructor.prototype._mapServices = function () {
-	var connection = new ConnectionService();
+	servicesManager.set('session', new SessionService());
+	servicesManager.set('xmpp', new XMPPService());
+};
 
-	servicesManager.set('connection', connection);
-
-	connection.connect();
+Constructor.prototype._mapTemplates = function () {
+	templatesManager.set('main', require('./components/base/main-template.html'));
+	templatesManager.set('menu', require('./components/menu/menu-template.html'));
+	templatesManager.set('login', require('./components/auth/login-template.html'));
+	templatesManager.set('logout', require('./components/auth/logout-template.html'));
 };
 
 Constructor.prototype._checkLoaded = function () {
-	if (this._context.readyState === 'complete') {
+	if (this._parent.readyState === 'complete') {
 		this.init();
 	} else {
 		setTimeout(this._checkLoaded.bind(this), this._interval);
@@ -26,11 +38,9 @@ Constructor.prototype._checkLoaded = function () {
 };
 
 Constructor.prototype.init = function () {
-	var element = window.document.createElement('div');
-	element.innerHTML = 'Hello World!!';
-
 	var body = window.document.querySelector('body');
-	body.appendChild(element);
+	body.innerHTML = '';
+	this._mainController = new MainController(body);
 };
 
 module.exports = Constructor;

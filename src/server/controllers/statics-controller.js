@@ -1,30 +1,22 @@
 var express = require('express');
 
+var Routes = require('./../components/statics/routes');
+
 var Constructor = function (path, port) {
 	this._connected = false;
 	this._port = port || 3001;
 	this._server = express();
-	this._addLogging();
-	this._addStaticAssets(path);
-};
-
-Constructor.prototype._addLogging = function () {
-	this._server.use(function (req, res, next) {
-		var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-		var path = req.protocol + '://' + req.get('host') + req.originalUrl;
-		console.log('STATIC ASSET SERVED:', ip, path);
-		next();
-	});
-};
-
-Constructor.prototype._addStaticAssets = function (path) {
-	this._server.use(express.static(path));
+	this._routes = new Routes(path + 'lib/', path + 'index.html');
 };
 
 Constructor.prototype.connect = function () {
 	var result = false;
 
 	if (!this._connected) {
+		this._server.use(this._routes.logger.bind(this._routes));
+		this._server.use('*/lib/*', this._routes.staticAssets.bind(this._routes));
+		this._server.use(this._routes.staticIndex.bind(this._routes));
+
 		this._server.listen(this._port, function () {
 			console.log('-------- SERVING STATICS --------');
 		});
