@@ -1,8 +1,5 @@
 var EventEmitter = require('events');
-var chai = require('chai');
 var ServicesManager = require('../../../src/server/managers/services-manager');
-
-chai.should();
 
 describe('The Models Manager class', function () {
 	var service = {};

@@ -1,37 +1,67 @@
-var EventEmitter = require('events').EventEmitter;
-var chai = require('chai');
 var sinon = require('sinon');
-var servicesManager = require('./../../../src/server/managers/services-manager');
-var componentsManager = require('./../../../src/server/managers/components-manager');
 
-require('./../../../mockups/server/bots/profile-manager');
-require('./../../../mockups/server/components/xmpp/messenger');
 var nodeXMPPServer = require('./../../../mockups/server/node-xmpp-server');
+var servicesManager = require('./../../../mockups/server/managers/services-manager');
+var componentsManager = require('./../../../mockups/server/managers/components-manager');
+var botsManager = require('./../../../mockups/server/managers/bots-manager');
+var ProfileManagerBot = require('./../../../mockups/server/bots/profile-manager');
+var XMPPMessengerComponent = require('./../../../mockups/server/components/xmpp/messenger');
 var AuthenticationService = require('./../../../mockups/server/services/authentication-service');
 var Socket = require('./../../../mockups/server/socket');
 
-var xmpp = require('./../../../src/server/controllers/xmpp-controller');
-
-chai.should();
-servicesManager.set('authentication', new AuthenticationService());
-
 describe('The XMPP Controller Class', function () {
+	var xmpp, sandbox, authenticationService;
+
+	beforeEach(function () {
+		sandbox = sinon.sandbox.create();
+
+		ProfileManagerBot.mockStart();
+		XMPPMessengerComponent.mockStart();
+		AuthenticationService.mockStart();
+
+		botsManager.mockStart();
+		componentsManager.mockStart();
+		servicesManager.mockStart();
+
+		xmpp = require('./../../../src/server/controllers/xmpp-controller');
+		authenticationService = servicesManager.set('authentication', new AuthenticationService());
+	});
+
+	afterEach(function () {
+		botsManager.clear();
+		componentsManager.clear();
+		servicesManager.clear();
+
+		botsManager.mockStop();
+		componentsManager.mockStop();
+		servicesManager.mockStop();
+
+		AuthenticationService.mockStop();
+		XMPPMessengerComponent.mockStop();
+		ProfileManagerBot.mockStop();
+
+		sandbox.restore();
+	});
+
 	it('Should exist', function () {
 		xmpp.should.exist;
 	});
 
 	describe('As an instance', function () {
-		var instance, sandbox, authenticationService;
+		var instance;
 
 		beforeEach(function () {
 			sandbox = sinon.sandbox.create();
+			ProfileManagerBot.mockStart();
+			var xmpp = require('./../../../src/server/controllers/xmpp-controller');
 			instance = new xmpp(null, null);
-			authenticationService = servicesManager.get('authentication');
 		});
 
 		afterEach(function () {
 			instance.disconnect();
 			instance = null;
+			ProfileManagerBot.mockStop();
+			botsManager.clear();
 			sandbox.restore();
 		});
 
@@ -39,13 +69,13 @@ describe('The XMPP Controller Class', function () {
 			instance.should.respondTo('connect');
 		});
 
+		it('Should connect', function () {
+			instance.connect().should.be.true;
+		});
+
 		it('Should fail silently when connecting a connected instance', function () {
 			instance.connect();
 			instance.connect().should.be.false;
-		});
-
-		it('Should connect', function () {
-			instance.connect().should.be.true;
 		});
 
 		it('Should have the "disconnect" method', function () {

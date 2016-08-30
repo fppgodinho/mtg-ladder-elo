@@ -1,10 +1,7 @@
-var EventEmitter = require('events').EventEmitter;
 var chai = require('chai');
 var sinon = require('sinon');
 var express = require('./../../../mockups/server/express');
 var StaticAssets = require('./../../../src/server/controllers/statics-controller');
-
-chai.should();
 
 describe('The Statics Controller Class', function () {
 	it('Should exist', function () {

@@ -9,32 +9,32 @@ Constructor.prototype._getInstance = function () {
 	return this._waterline.collections[this._schema.identity];
 };
 
-Constructor.prototype.find = function (criteria, callback) {
-	return this._getInstance().find(criteria, callback);
+Constructor.prototype.find = function (criteria) {
+	return this._getInstance().find(criteria);
 };
 
-Constructor.prototype.findOne = function (criteria, callback) {
-	return this._getInstance().findOne(criteria, callback);
+Constructor.prototype.findOne = function (criteria) {
+	return this._getInstance().findOne(criteria);
 };
 
-Constructor.prototype.create = function (criteria, callback) {
-	return this._getInstance().create(criteria, callback);
+Constructor.prototype.create = function (criteria) {
+	return this._getInstance().create(criteria);
 };
 
-Constructor.prototype.findOrCreate = function (criteria, values, callback) {
-	return this._getInstance().findOrCreate(criteria, values, callback);
+Constructor.prototype.findOrCreate = function (criteria, values) {
+	return this._getInstance().findOrCreate(criteria, values);
 };
 
-Constructor.prototype.update = function (criteria, values, callback) {
-	return this._getInstance().update(criteria, values, callback);
+Constructor.prototype.update = function (criteria, values) {
+	return this._getInstance().update(criteria, values);
 };
 
-Constructor.prototype.destroy = function (criteria, callback) {
-	return this._getInstance().destroy(criteria, callback);
+Constructor.prototype.destroy = function (criteria) {
+	return this._getInstance().destroy(criteria);
 };
 
-Constructor.prototype.query = function (query, data, callback) {
-	return this._getInstance().query(query, data, callback);
+Constructor.prototype.query = function (query, data) {
+	return this._getInstance().query(query, data);
 };
 
 module.exports = Constructor;
