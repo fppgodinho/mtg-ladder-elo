@@ -1,4 +1,4 @@
-var serviceManager = require('./../../managers/services-manager');
+var servicesManager = require('./../../managers/services-manager');
 
 var SessionEvent = require('./../../services/session/session-event');
 var ConnectionEvent = require('./../../services/connection/connection-event');
@@ -10,10 +10,10 @@ var Constructor = function (context) {
 	this._context = context;
 	this._data = null;
 
-	this._sessionService = serviceManager.get('session');
+	this._sessionService = servicesManager.get('session');
 	this._sessionService.on(SessionEvent.CHANGED, this._checkSession.bind(this));
 
-	this._xmppService = serviceManager.get('xmpp');
+	this._xmppService = servicesManager.get('xmpp');
 
 	this._loginView = new LoginView();
 	this._loginView.on(AuthEvent.LOGIN, this._handleLogin.bind(this));
@@ -22,16 +22,20 @@ var Constructor = function (context) {
 	this._logoutView.on(AuthEvent.LOGOUT, this._handleLogout.bind(this));
 };
 
-Constructor.prototype._handleLogin = function (username, password) {
+Constructor.prototype._handleLogin = function (username, password, address, port) {
 	var self = this;
 
-	this._xmppService.login(username, password).then(function (data) {
-		var user = JSON.parse(data.innerText);
+	this._xmppService.setup(address, port).then(function() {
+		self._xmppService.login(username, password).then(function (data) {
+			var user = JSON.parse(data.innerText);
 
-		self._sessionService.setUser(user);
+			self._sessionService.setUser(user);
+		}).catch(function (error) {
+			console.log('Controller::Login failed!', error);
+		});
 	}).catch(function (error) {
-		console.log('Controller::Login failed!', error);
-	});
+		console.log('->', error);
+	});;
 };
 
 Constructor.prototype._handleLogout = function () {

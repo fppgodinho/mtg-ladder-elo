@@ -24,6 +24,10 @@ Constructor.prototype.setup = function (protocol, address, port, reconnect, dela
 	this._delay = delay;
 
 	this._url = this._protocol + '://' + this._address + (this._port?(':' + this._port):'');
+
+	this._timeout = null;
+
+	return when.resolve();
 };
 
 Constructor.prototype.connect = function () {
@@ -95,7 +99,7 @@ Constructor.prototype._handleOnError = function (error) {
 		this._setState(ConnectionState.OFFLINE);
 	} else {
 		this._setState(ConnectionState.CONNECTING);
-		setTimeout(this._createWebSocket.bind(this), this._delay);
+		this._timeout = setTimeout(this._createWebSocket.bind(this), this._delay);
 	}
 };
 
@@ -106,7 +110,13 @@ Constructor.prototype._handleOnMessage = function (message) {
 Constructor.prototype.disconnect = function () {
 	var defered = when.defer();
 
-	if (this.isBusy()) {
+	if (this._state === ConnectionState.CONNECTING) {
+		this._disconected = true;
+		clearTimeout(this._timeout);
+		this._destroyWebSocket();
+		this._setState(ConnectionState.OFFLINE);
+		defered.resolve();
+	} else if (this.isBusy()) {
 		defered.reject(ConnectionError.BUSY);
 	} else if (!this.isOnline()) {
 		defered.reject(ConnectionError.NOT_CONNECTED);
@@ -121,11 +131,13 @@ Constructor.prototype.disconnect = function () {
 };
 
 Constructor.prototype._destroyWebSocket = function () {
-	this._webSocket.onopen = null;
-	this._webSocket.onclose = null;
-	this._webSocket.onerror = null;
-	this._webSocket.onmessage = null;
-	this._webSocket = null;
+	if (this._webSocket) {
+		this._webSocket.onopen = null;
+		this._webSocket.onclose = null;
+		this._webSocket.onerror = null;
+		this._webSocket.onmessage = null;
+		this._webSocket = null;
+	}
 };
 
 Constructor.prototype.send = function (message) {

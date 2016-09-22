@@ -18,7 +18,7 @@
     "watch-client-coverage": "watch 'npm run client-coverage' src/client/ tests/client/ mockups/client --interval 10",
     "watch-server-tests": "watch 'npm run server-tests' src/server/ tests/server/ mockups/server --interval 2",
     "watch-server-coverage": "watch 'npm run server-coverage' src/server/ tests/server/ mockups/server --interval 10",
-    "start": "node start-server"
+    "start": "node start-server 3020 3021"
   },
   "repository": {
     "type": "git",

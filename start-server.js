@@ -1,10 +1,10 @@
 new (require('./src/server/main'))({
 	statics: {
 		path: __dirname + '/statics/',
-		port: 3000
+		port: process.argv[2] || 3000
 	},
 	xmpp: {
 		host: 'localhost',
-		poert: 3001
+		port: process.argv[3] || 3001
 	}
 });

@@ -15,11 +15,14 @@ var Constructor = function () {
 	this._submitElement.addEventListener('click', this._handleSubmit.bind(this));
 	this._usernameElement = this._element.querySelector('#USERNAME');
 	this._passwordElement = this._element.querySelector('#PASSWORD');
+	this._addressElement = this._element.querySelector('#ADDRESS');
+	this._portElement = this._element.querySelector('#PORT');
+
 };
 util.inherits(Constructor, EventEmitter);
 
 Constructor.prototype._handleSubmit = function () {
-	this.emit(AuthEvent.LOGIN, this._usernameElement.value, this._passwordElement.value);
+	this.emit(AuthEvent.LOGIN, this._usernameElement.value, this._passwordElement.value, this._addressElement.value, this._portElement.value);
 };
 
 Constructor.prototype.render = function (context, data) {
