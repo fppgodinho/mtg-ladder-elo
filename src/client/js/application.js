@@ -38,9 +38,9 @@ Constructor.prototype._checkLoaded = function () {
 };
 
 Constructor.prototype.init = function () {
-	var body = window.document.querySelector('body');
-	body.innerHTML = '';
-	this._mainController = new MainController(body);
+	var content = window.document.querySelector('#CONTENT');
+	content.innerHTML = '';
+	this._mainController = new MainController(content);
 };
 
 module.exports = Constructor;

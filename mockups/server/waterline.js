@@ -1,70 +1,59 @@
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var mock = require('mock-require');
-var Waterline = require('waterline');
-var memoryAdaptor = require('sails-memory');
 
-var instance;
+var _instance, _error, _response;
 
-var MockUpClass = function () {
-	this._memoryDB = new Waterline();
+var Constructor = function () {
+	_instance = this;
 };
-util.inherits(MockUpClass, EventEmitter);
+util.inherits(Constructor, EventEmitter);
 
-
-MockUpClass.prototype.loadCollection = function (collection) {
-	return this._memoryDB.loadCollection(collection);
+Constructor.prototype.loadCollection = function () {
+	return {};
 };
-MockUpClass.prototype.initialize = function (config, callback) {
-
-	this._configDB = {
-		adapters: {
-			'memory': memoryAdaptor
-		},
-
-		connections: {
-			default: {
-				adapter: 'memory'
-			}
-		}
-	};
-
-	this._memoryDB.initialize(this._configDB, callback);
-
-	this.collections = this._memoryDB.collections;
+Constructor.prototype.initialize = function () {
+	this.collections = [];
 };
 
-function mockup () {
-	instance = new MockUpClass();
-	return instance;
+Constructor.Collection = {
+	extend: function () {}
 };
-mockup.Collection = Waterline.Collection;
 
-mock('waterline', mockup);
+Constructor.getInstance = function () {
+	return _instance;
+};
 
-module.exports = {
-	getInstance: function () {
-		return instance || new mockup();
-	},
-	destroy: function (callback) {
-		if (instance) {
-			instance._memoryDB.teardown(function () {});
-			// var adapters = instance._config.adapters || {};
-			// var promises = [];
-			// console.log(adapters)
-			// for (var i in adapters) adapters[i].teardown(null, function() {})
-			// Object.keys(adapters)
-			// 	.forEach(function (adapter) {
-			// 		if (adapters[adapter].teardown) {
-			// 			//var promise = new Promise(function (resolve) {
-			// 				adapters[adapter].teardown(null, function () {});
-			// 			//});
-			// 			//promises.push(promise);
-			// 		}
-			// 	});
+Constructor.mockStart = function () {
+	mock('waterline', Constructor);
+};
 
-			//Promise.all(promises).then(callback);
-			setTimeout(callback, 10);
-		} else callback();
+Constructor.mockStop = function () {
+	mock.stop('waterline', Constructor);
+};
+
+Constructor.mockCollection = function (instance, id) {
+	instance.collections = {};
+	instance.collections[id] = {
+		find: Constructor._resolve,
+		findOne: Constructor._resolve,
+		create: Constructor._resolve,
+		findOrCreate: Constructor._resolve,
+		update: Constructor._resolve,
+		destroy: Constructor._resolve,
+		query: Constructor._resolve
 	}
+
+	return instance.collections[id];
 };
+
+Constructor.setResponse = function (response, error) {
+	_response = response;
+	_error = error;
+};
+
+Constructor._resolve = function () {
+	return _error || _response
+};
+
+module.exports = Constructor;

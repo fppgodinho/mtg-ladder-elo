@@ -1,11 +1,19 @@
-var chai = require('chai');
 var Waterline = require('./../../../mockups/server/waterline');
-var Abstract = require('./../../../src/server/models/abstract-model');
-var Users = require('./../../../src/server/models/users-model');
 
-chai.should();
+var Abstract = require('./../../../src/server/models/abstract-model');
 
 describe('The Users Model Class', function () {
+	var Users;
+
+	beforeEach(function () {
+		Waterline.mockStart();
+		Users = require('./../../../src/server/models/users-model');
+	});
+
+	afterEach(function () {
+		Waterline.mockStop();
+	});
+
 	it('Should exist', function () {
 		Users.should.exist;
 	});
@@ -15,7 +23,8 @@ describe('The Users Model Class', function () {
 		var waterline;
 
 		beforeEach(function () {
-			waterline = Waterline.getInstance();
+			waterline = new Waterline();
+
 			instance = new Users(waterline);
 		});
 
