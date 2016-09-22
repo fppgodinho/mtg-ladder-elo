@@ -1,7 +1,7 @@
 Automation requires node 4.x.x^
 
 # Local Dev (http://localhost:3000):
-	npm run start
+	npm run start [staticsPort [xmppPort]]
 
 # Client:
 	npm run watch-client-compile
